@@ -4,96 +4,10 @@
     <meta charset="UTF-8">
     <title>Title</title>
     <link rel="stylesheet" type="text/css" href="style.css">
-    <script src="webjars/jquery/1.9.1/jquery.min.js"></script>
-    <!--<script src="webjars/jquery-mobile/1.4.2/jquery.mobile-1.4.2.min.js"></script>-->
-    <script type="text/javascript">
-        var startx = 0;
-        var starty = 0;
-
-        function moveRef(direction) {
-            var movementSpeed = $('#movementSpeed').val();
-            $.post("/move" , {dir : direction, speed: movementSpeed});
-        }
-
-        function swipe(diffx, diffy) {
-            $.post("/swipe" , {dx : diffx, dy : diffy});
-        }
-
-        function onMouseClick() {
-            $.get("/click", function() {});
-        }
-
-        function onKeyPress(keyName) {
-            $.get("/press/" + keyName, function() {});
-        }
-
-        function onRedirectURL() {
-            var url = $('#inputURL').val();
-            $.post("/play", {reqUrl: url});
-        }
-
-        $(document).keydown(function(e) {
-            switch(e.which) {
-                case 37: // left
-                moveRef('left');
-                break;
-
-                case 38: // up
-                moveRef('up');
-                break;
-
-                case 39: // right
-                moveRef('right');
-                break;
-
-                case 40: // down
-                moveRef('down');
-                break;
-
-                case 32: // spacebar
-                onMouseClick();
-                break;
-
-                case 27: // esc
-                onKeyPress('esc');
-                break;
-
-                case 13: // enter
-                if ($('#inputURL').is(':focus'))
-                   onRedirectURL();
-                break;
-
-                case 189: // -
-                if ($('#movementSpeed').val() > 10) {
-                    $('#movementSpeed').val(parseInt($('#movementSpeed').val(), 10) - 10);
-                }
-                break;
-
-                case 187: // =
-                if ($('#movementSpeed').val() < 100) {
-                    $('#movementSpeed').val(parseInt($('#movementSpeed').val(), 10) + 10);
-                }
-                break;
-                default: return; // exit this handler for other keys
-        }
-        e.preventDefault(); // prevent the default action (scroll / move caret)
-    });
-
-
-    document.addEventListener('touchstart', function(e){
-        var touchobj = e.changedTouches[0]; // reference first touch point (ie: first finger)
-        startx = parseInt(touchobj.clientX); // get x position of touch point relative to left edge of browser
-        starty = parseInt(touchobj.clientY);
-        e.preventDefault()
-    }, false)
- 
-    document.addEventListener('touchend', function(e){
-        var touchobj = e.changedTouches[0] // reference first touch point for this event
-        var diffx = parseInt(touchobj.clientX) - startx;
-        var diffy = parseInt(touchobj.clientY) - starty;
-        swipe(diffx, diffy);
-    }, false)
-    </script>
+    <script src="/webjars/jquery/3.1.0/jquery.min.js"></script>
+    <script src="/webjars/sockjs-client/1.1.2/sockjs.min.js"></script>
+    <script src="/webjars/stomp-websocket/2.3.3-1/stomp.min.js"></script>
+    <script src="/app.js"></script>
 
 </head>
 <body>

@@ -7,10 +7,10 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+@Service
+public class BrowserService {
 
-public class Browser {
-
-    public Browser() {
+    public BrowserService() {
     }
 
     public void browse(String url) {

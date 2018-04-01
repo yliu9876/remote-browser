@@ -1,21 +1,17 @@
 package com.yliu.remotebrowser;
 
 
+import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
 
 import java.awt.*;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 
-@RestController
-public class RemoteController {
+@Service
+public class LocalIOService {
 
-    static {
-        System.setProperty("java.awt.headless", "false");
-    }
-
-    @PostMapping("/move")
-    public String mouseMove(@RequestParam("dir") String direction, @RequestParam("speed") int diff) throws AWTException {
+    public void mouseMove(@RequestParam("dir") String direction, @RequestParam("speed") int diff) throws AWTException {
         Point point = MouseInfo.getPointerInfo().getLocation();
         int dx = 0, dy = 0;
         switch (direction) {
@@ -34,41 +30,31 @@ public class RemoteController {
         }
         Robot bot = new Robot();
         bot.mouseMove((int)point.getX() + dx, (int)point.getY() + dy);
-
-        return "OK";
     }
 
-    @PostMapping("/swipe")
-    public String mouseMove(@RequestParam("dx") int dx, @RequestParam("dy") int dy) throws AWTException {
+    public void mouseMove(@RequestParam("dx") int dx, @RequestParam("dy") int dy) throws AWTException {
         Point point = MouseInfo.getPointerInfo().getLocation();
         Robot bot = new Robot();
         bot.mouseMove((int)point.getX() + dx, (int)point.getY() + dy);
-        return "OK";
     }
 
 
-    @RequestMapping("/click")
-    public String mouseClick() throws AWTException {
+    public void mouseClick() throws AWTException {
         Robot bot = new Robot();
         bot.mousePress(InputEvent.BUTTON1_MASK);
         bot.mouseRelease(InputEvent.BUTTON1_MASK);
-        return "OK";
     }
 
-    @PostMapping("/clickOn")
-    public String mouseClickOn(@RequestParam("x") int x, @RequestParam("y") int y) throws AWTException {
+    public void mouseClickOn(@RequestParam("x") int x, @RequestParam("y") int y) throws AWTException {
         Robot bot = new Robot();
         bot.mouseMove(x, y);
         bot.mousePress(InputEvent.BUTTON1_MASK);
         bot.mouseRelease(InputEvent.BUTTON1_MASK);
-        return "OK";
     }
 
-    @RequestMapping("/press/esc")
-    public String pressEscKey() throws AWTException {
+    public void pressEscKey() throws AWTException {
         Robot bot = new Robot();
         bot.keyPress(KeyEvent.VK_ESCAPE);
-        return "OK";
     }
 
 }
