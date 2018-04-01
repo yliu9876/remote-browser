@@ -107,6 +107,7 @@ function disconnect() {
 
 
 $(function () {
+
     document.addEventListener('touchstart', function(e){
         var touchobj = e.changedTouches[0]; // reference first touch point (ie: first finger)
         startTouchX = startX = parseInt(touchobj.clientX); // get x position of touch point relative to left edge of browser
@@ -120,8 +121,8 @@ $(function () {
         var diffy = parseInt(touchobj.clientY) - startY;
         var diff = $('#movementSpeed').val();
         if (Math.abs(parseInt(diffx)) > diff || Math.abs(parseInt(diffy)) > diff) {
-            startX = touchobj.clientX;
-            startY = touchobj.clientY;
+            startX = parseInt(touchobj.clientX);
+            startY = parseInt(touchobj.clientY);
             swipe(diffx, diffy);
         }
         e.preventDefault();
@@ -140,6 +141,17 @@ $(function () {
         e.preventDefault();
     }, false)
 
-   // connect();
+
+    $(window).on('beforeunload', function(){
+         console.log("beforeUnload event!");
+         disconnect();
+    });
+
+    connect();
+
+    stompClient.ws.onclose = function() {
+   		console.log("Websocket connection closed and handled from our app.");
+   		disconnect();
+   };
 
 });
