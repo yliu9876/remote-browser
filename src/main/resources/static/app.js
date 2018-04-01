@@ -47,8 +47,10 @@
         e.preventDefault(); // prevent the default action (scroll / move caret)
     });
 
-var startx = 0;
-var starty = 0;
+var startX = 0;
+var startY = 0;
+var startTouchx = 0;
+var startTouchY = 0;
 var stompClient = null;
 var connected = false;
 
@@ -61,7 +63,7 @@ function moveRef(direction) {
 function swipe(diffx, diffy) {
     if (!connected)
         connect();
-    stompClient.send("/app/swipe/" + dx + "/" + dy);
+    stompClient.send("/app/swipe/" + diffx + "/" + diffy);
 }
 
 function onMouseClick() {
@@ -107,18 +109,37 @@ function disconnect() {
 $(function () {
     document.addEventListener('touchstart', function(e){
         var touchobj = e.changedTouches[0]; // reference first touch point (ie: first finger)
-        startx = parseInt(touchobj.clientX); // get x position of touch point relative to left edge of browser
-        starty = parseInt(touchobj.clientY);
-        e.preventDefault()
+        startTouchX = startX = parseInt(touchobj.clientX); // get x position of touch point relative to left edge of browser
+        startTouchY = startY = parseInt(touchobj.clientY);
+        e.preventDefault();
     }, false)
-     
-    document.addEventListener('touchend', function(e){
-        var touchobj = e.changedTouches[0] // reference first touch point for this event
-        var diffx = parseInt(touchobj.clientX) - startx;
-        var diffy = parseInt(touchobj.clientY) - starty;
-        swipe(diffx, diffy);
+
+    document.addEventListener('touchmove', function(e){
+        var touchobj = e.changedTouches[0] // reference first touch point for this event
+        var diffx = parseInt(touchobj.clientX) - startX;
+        var diffy = parseInt(touchobj.clientY) - startY;
+        var diff = $('#movementSpeed').val();
+        if (Math.abs(parseInt(diffx)) > diff || Math.abs(parseInt(diffy)) > diff) {
+            startX = touchobj.clientX;
+            startY = touchobj.clientY;
+            swipe(diffx, diffy);
+        }
+        e.preventDefault();
     }, false)
 
-    connect();
+    document.addEventListener('touchend', function(e){
+        var touchobj = e.changedTouches[0] // reference first touch point for this event
+        var diffx = parseInt(touchobj.clientX) - startTouchX;
+        var diffy = parseInt(touchobj.clientY) - startTouchY;
+        var diff = $('#movementSpeed').val();
+        if (Math.abs(parseInt(diffx)) <= diff && Math.abs(parseInt(diffy)) <= diff) {
+            startTouchX = startX = 0;
+            startTouchY = startY = 0;
+            onMouseClick();
+        }
+        e.preventDefault();
+    }, false)
+
+   // connect();
 
 });
