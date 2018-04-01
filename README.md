@@ -6,7 +6,7 @@ run application on your idle PC (java and maven required)
       mvn spring-boot:run
    
 remote access to the PC:
-      http://<your IP address>:8080
+      http:// your IP address :8080
 
 
 
