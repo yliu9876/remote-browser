@@ -3,17 +3,108 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-    <script src="jquery-3.3.1.min.js"></script>
-    <script src="app.js"></script>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <script src="webjars/jquery/1.9.1/jquery.min.js"></script>
+    <!--<script src="webjars/jquery-mobile/1.4.2/jquery.mobile-1.4.2.min.js"></script>-->
+    <script type="text/javascript">
+        var startx = 0;
+        var starty = 0;
+
+        function moveRef(direction) {
+            var movementSpeed = $('#movementSpeed').val();
+            $.post("/move" , {dir : direction, speed: movementSpeed});
+        }
+
+        function swipe(diffx, diffy) {
+            $.post("/swipe" , {dx : diffx, dy : diffy});
+        }
+
+        function onMouseClick() {
+            $.get("/click", function() {});
+        }
+
+        function onKeyPress(keyName) {
+            $.get("/press/" + keyName, function() {});
+        }
+
+        function onRedirectURL() {
+            var url = $('#inputURL').val();
+            $.post("/play", {reqUrl: url});
+        }
+
+        $(document).keydown(function(e) {
+            switch(e.which) {
+                case 37: // left
+                moveRef('left');
+                break;
+
+                case 38: // up
+                moveRef('up');
+                break;
+
+                case 39: // right
+                moveRef('right');
+                break;
+
+                case 40: // down
+                moveRef('down');
+                break;
+
+                case 32: // spacebar
+                onMouseClick();
+                break;
+
+                case 27: // esc
+                onKeyPress('esc');
+                break;
+
+                case 13: // enter
+                if ($('#inputURL').is(':focus'))
+                   onRedirectURL();
+                break;
+
+                case 189: // -
+                if ($('#movementSpeed').val() > 10) {
+                    $('#movementSpeed').val(parseInt($('#movementSpeed').val(), 10) - 10);
+                }
+                break;
+
+                case 187: // =
+                if ($('#movementSpeed').val() < 100) {
+                    $('#movementSpeed').val(parseInt($('#movementSpeed').val(), 10) + 10);
+                }
+                break;
+                default: return; // exit this handler for other keys
+        }
+        e.preventDefault(); // prevent the default action (scroll / move caret)
+    });
+
+
+    document.addEventListener('touchstart', function(e){
+        var touchobj = e.changedTouches[0]; // reference first touch point (ie: first finger)
+        startx = parseInt(touchobj.clientX); // get x position of touch point relative to left edge of browser
+        starty = parseInt(touchobj.clientY);
+        e.preventDefault()
+    }, false)
+ 
+    document.addEventListener('touchend', function(e){
+        var touchobj = e.changedTouches[0] // reference first touch point for this event
+        var diffx = parseInt(touchobj.clientX) - startx;
+        var diffy = parseInt(touchobj.clientY) - starty;
+        swipe(diffx, diffy);
+    }, false)
+    </script>
 
 </head>
 <body>
-    <input id="inputURL">
-    <button id="up" onclick="moveRef('up')">up</button>
-    <button id="down" onclick="moveRef('down')">down</button>
-    <button id="left" onclick="moveRef('left')">left</button>
-    <button id="right" onclick="moveRef('right')">right</button>
-    <button id="mouseClick" onclick="onMouseClick()">click</button>
+<div id="page1">
+<form>
+    <label for="movementSpeed"><span>Mouse Speed: <input type="text" name="movementSpeed" class="question" id="movementSpeed" value="20" disabled="disabled"/></span></label>
 
+    <input type="text" name="inputURL" class="question" id="inputURL" required autocomplete="off" />
+    <label for="inputURL"><span>Enter your URL here</span></label>
+
+</form>
+</div>
 </body>
 </html>

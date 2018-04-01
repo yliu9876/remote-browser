@@ -16,7 +16,7 @@ public class RemoteBrowserApplication {
 	}
 
 	@PostMapping("/play")
-	public void play(@RequestParam("req-url") String url) {
+	public void play(@RequestParam("reqUrl") String url) {
 		Browser browser = new Browser();
 		browser.browse(url);
 	}
