@@ -112,7 +112,7 @@ $(function () {
         var touchobj = e.changedTouches[0]; // reference first touch point (ie: first finger)
         startTouchX = startX = parseInt(touchobj.clientX); // get x position of touch point relative to left edge of browser
         startTouchY = startY = parseInt(touchobj.clientY);
-        e.preventDefault();
+        //e.preventDefault();
     }, false)
 
     document.addEventListener('touchmove', function(e){
@@ -138,7 +138,7 @@ $(function () {
             startTouchY = startY = 0;
             onMouseClick();
         }
-        e.preventDefault();
+        //e.preventDefault();
     }, false)
 
 
