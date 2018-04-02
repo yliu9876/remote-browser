@@ -100,7 +100,7 @@ function connect() {
         connected = true;
         console.log('Connected: ' + frame);
     }, function () {
-       setTimeout(connect(), 3000);
+       setTimeout(connect(), 1000);
     });
 }
 
