@@ -29,6 +29,8 @@
                 case 13: // enter
                 if ($('#inputURL').is(':focus'))
                    onRedirectURL();
+                if ($('#inputText').is(':focus'))
+                   onEnterText();
                 break;
 
                 case 189: // -
@@ -84,6 +86,11 @@ function onRedirectURL() {
     stompClient.send("/app/browse", {},  $('#inputURL').val());
 }
 
+function onEnterText() {
+    if (!connected)
+        connect();
+    stompClient.send("/app/type", {},  $('#inputText').val());
+}
 
 
 function connect() {
@@ -92,8 +99,12 @@ function connect() {
     stompClient.connect({}, function (frame) {
         connected = true;
         console.log('Connected: ' + frame);
+    }, function () {
+       setTimeout(connect(), 3000);
     });
 }
+
+
 
 function disconnect() {
     if (stompClient !== null) {
@@ -102,8 +113,6 @@ function disconnect() {
     connected = false;
     console.log("Disconnected");
 }
-
-
 
 
 $(function () {
@@ -119,7 +128,7 @@ $(function () {
         var touchobj = e.changedTouches[0] // reference first touch point for this event
         var diffx = parseInt(touchobj.clientX) - startX;
         var diffy = parseInt(touchobj.clientY) - startY;
-        var diff = $('#movementSpeed').val();
+        var diff = 10;
         if (Math.abs(parseInt(diffx)) > diff || Math.abs(parseInt(diffy)) > diff) {
             startX = parseInt(touchobj.clientX);
             startY = parseInt(touchobj.clientY);
@@ -132,7 +141,7 @@ $(function () {
         var touchobj = e.changedTouches[0] // reference first touch point for this event
         var diffx = parseInt(touchobj.clientX) - startTouchX;
         var diffy = parseInt(touchobj.clientY) - startTouchY;
-        var diff = $('#movementSpeed').val();
+        var diff = 10;
         if (Math.abs(parseInt(diffx)) <= diff && Math.abs(parseInt(diffy)) <= diff) {
             startTouchX = startX = 0;
             startTouchY = startY = 0;

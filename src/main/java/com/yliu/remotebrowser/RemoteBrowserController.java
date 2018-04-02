@@ -56,6 +56,12 @@ public class RemoteBrowserController {
         localIOService.pressEscKey();
     }
 
+    @MessageMapping("/type")
+    public void enterText(String text) throws AWTException {
+        System.out.println(text);
+        localIOService.enterText(HtmlUtils.htmlUnescape(text));
+    }
+
 
 
 }

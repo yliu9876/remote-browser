@@ -5,13 +5,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
 
 import java.awt.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 
 @Service
 public class LocalIOService {
 
-    public void mouseMove(@RequestParam("dir") String direction, @RequestParam("speed") int diff) throws AWTException {
+    public void mouseMove(String direction, int diff) throws AWTException {
         Point point = MouseInfo.getPointerInfo().getLocation();
         int dx = 0, dy = 0;
         switch (direction) {
@@ -45,7 +47,7 @@ public class LocalIOService {
         bot.mouseRelease(InputEvent.BUTTON1_MASK);
     }
 
-    public void mouseClickOn(@RequestParam("x") int x, @RequestParam("y") int y) throws AWTException {
+    public void mouseClickOn(int x, int y) throws AWTException {
         Robot bot = new Robot();
         bot.mouseMove(x, y);
         bot.mousePress(InputEvent.BUTTON1_MASK);
@@ -55,6 +57,24 @@ public class LocalIOService {
     public void pressEscKey() throws AWTException {
         Robot bot = new Robot();
         bot.keyPress(KeyEvent.VK_ESCAPE);
+    }
+
+    public void enterText(String text) throws AWTException {
+        StringSelection stringSelection = new StringSelection(text);
+        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+        clipboard.setContents(stringSelection, stringSelection);
+
+        Robot robot = new Robot();
+        if (System.getProperty("os.name").toLowerCase().indexOf("mac") > -1)
+            robot.keyPress(KeyEvent.VK_META);
+        else
+            robot.keyPress(KeyEvent.VK_CONTROL);
+        robot.keyPress(KeyEvent.VK_V);
+        robot.keyRelease(KeyEvent.VK_V);
+        if (System.getProperty("os.name").toLowerCase().indexOf("mac") > -1)
+            robot.keyRelease(KeyEvent.VK_META);
+        else
+            robot.keyRelease(KeyEvent.VK_CONTROL);
     }
 
 }
