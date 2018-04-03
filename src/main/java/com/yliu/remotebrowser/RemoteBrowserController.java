@@ -41,9 +41,9 @@ public class RemoteBrowserController {
     }
 
 
-    @MessageMapping("/click")
-    public void mouseClick() throws AWTException {
-        localIOService.mouseClick();
+    @MessageMapping("/click/{keyPressed}")
+    public void mouseClick(@DestinationVariable("keyPressed") String keyPressed) throws AWTException {
+        localIOService.mouseClick(keyPressed);
     }
 
     @MessageMapping("/clickOn/{x}/{y}")
@@ -60,6 +60,11 @@ public class RemoteBrowserController {
     public void enterText(String text) throws AWTException {
         System.out.println(text);
         localIOService.enterText(HtmlUtils.htmlUnescape(text));
+    }
+
+    @MessageMapping("/scroll/{direction}")
+    public void mouseScroll(@DestinationVariable("direction") String direction) throws AWTException {
+        localIOService.mouseScroll(direction);
     }
 
 

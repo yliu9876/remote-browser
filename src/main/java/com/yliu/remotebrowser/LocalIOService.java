@@ -41,10 +41,20 @@ public class LocalIOService {
     }
 
 
-    public void mouseClick() throws AWTException {
+    public void mouseClick(String keyPressed) throws AWTException {
         Robot bot = new Robot();
-        bot.mousePress(InputEvent.BUTTON1_MASK);
-        bot.mouseRelease(InputEvent.BUTTON1_MASK);
+        switch (keyPressed.toLowerCase()) {
+            case "left" :
+                bot.mousePress(InputEvent.BUTTON1_MASK);
+                bot.mouseRelease(InputEvent.BUTTON1_MASK);
+                break;
+            case "right" :
+                bot.mousePress(InputEvent.BUTTON3_MASK);
+                bot.mouseRelease(InputEvent.BUTTON3_MASK);
+                break;
+        }
+
+
     }
 
     public void mouseClickOn(int x, int y) throws AWTException {
@@ -75,6 +85,19 @@ public class LocalIOService {
             robot.keyRelease(KeyEvent.VK_META);
         else
             robot.keyRelease(KeyEvent.VK_CONTROL);
+    }
+
+    public void mouseScroll(String direction) throws AWTException {
+        System.out.println(direction);
+        Robot bot = new Robot();
+        switch (direction.toLowerCase()) {
+            case "up":
+                bot.mouseWheel(-10);
+                break;
+            case "down":
+                bot.mouseWheel(10);
+                break;
+        }
     }
 
 }
